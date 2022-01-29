@@ -108,4 +108,46 @@ contract("ColdChain", (accounts) => {
 
   });
 
+  it("should sign a message and store as a certificate from the issuer to the prover", async () => {
+    const mnemonic = "stage comic document hill raccoon drift eagle cousin inquiry swift motor admit";
+    const providerOrUrl = "http://localhost:8545";
+    const provider = new HDWalletProvider({
+      mnemonic,
+      providerOrUrl
+    });
+    
+    this.web3 = new Web3(provider);
+
+    const { inspector, manufacturerA } = this.defaultEntities;
+    const vaccineBatchId = 0;
+    const message = `Inspector (${inspector.id}) certifies vaccine batch #${vaccineBatchId} for Manufacturer (${manufacturerA})`;
+    const signature = await this.web3.eth.sign(
+      this.web3.utils.keccak256(message),
+      inspector.id 
+    );
+
+    const result = await this.coldChainInstance.issueCertificate(
+      inspector.id,
+      manufacturerA.id,
+      this.StatusEnums.manufactured.val,
+      vaccineBatchId,
+      signature,
+      { from: this.owner }
+    );
+    
+    expectEvent(result.receipt, "IssueCertificate", {
+      issuer: inspector.id,
+      prover: manufacturerA.id,
+      certificateId: new BN(0),
+    });
+
+    const retrievedCertificate = await this.coldChainInstance.certificates.call(0);
+
+    assert.equal(retrievedCertificate.id, 0);
+    assert.equal(retrievedCertificate.issuer["id"], inspector.id);
+    assert.equal(retrievedCertificate.prover["id"], manufacturerA.id);
+    assert.equal(retrievedCertificate.signature, signature);
+    assert.equal(retrievedCertificate.status, this.StatusEnums.manufactured.pos.toString());
+  });
+
 });
