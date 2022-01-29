@@ -150,4 +150,20 @@ contract("ColdChain", (accounts) => {
     assert.equal(retrievedCertificate.status, this.StatusEnums.manufactured.pos.toString());
   });
 
+
+  it("should verify that the certificate signature matches the issuer", async () => {
+    const { inspector, manufacturerA } = this.defaultEntities;
+    const vaccineBatchId = 0;
+    const message = `Inspector (${inspector.id}) certifies vaccine batch #${vaccineBatchId} for Manufacturer (${manufacturerA})`;
+
+    const signatureMatches = await this.coldChainInstance.isMatchingSignature(
+      this.web3.utils.keccak256(message),
+      certificate.id,
+      inspector.id,
+      { from: this.owner }
+    ); 
+    
+    assert.equal(signatureMatches, true);
+});
+
 });
