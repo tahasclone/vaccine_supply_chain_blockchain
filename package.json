@@ -1,0 +1,28 @@
+{
+  "name": "coldChain",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "ganache": "ganache-cli -m \"stage comic document hill raccoon drift eagle cousin inquiry swift motor admit\"",
+    "test": "truffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tahasclone/vaccine_supply_chain_blockchain.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tahasclone/vaccine_supply_chain_blockchain/issues"
+  },
+  "homepage": "https://github.com/tahasclone/vaccine_supply_chain_blockchain#readme",
+  "devDependencies": {
+    "@openzeppelin/test-helpers": "^0.5.15",
+    "@truffle/hdwallet-provider": "^2.0.1",
+    "web3": "^1.7.0"
+  }
+}

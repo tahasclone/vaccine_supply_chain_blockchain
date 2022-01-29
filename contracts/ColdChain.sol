@@ -65,7 +65,7 @@ contract ColdChain {
     mapping(uint => Certificate) public certificates;
     mapping(address => Entity) public entities;
 
-    event AddEntity(address entityId);
+    event AddEntity(address entityId, string entityMode);
     event AddVaccineBatch(uint vaccineBatchId, address indexed manufacturer);
     event IssueCertificate(address indexed issuer, address indexed prover, uint certificateId);
 
@@ -74,7 +74,7 @@ contract ColdChain {
         uint[] memory _certificateIds = new uint[](MAX_CERTIFICATIONS);
         Entity memory entity = Entity(_id, mode, _certificateIds);
         entities[_id] = entity;
-        emit AddEntity(entity.id);
+        emit AddEntity(entity.id, _mode);
 
     }
 
