@@ -59,7 +59,7 @@ contract("ColdChain", (accounts) => {
     this.providerOrUrl = "http://localhost:8545";
   });
 
-  it("should add entities", async () => {
+  it("should add entities successfully", async () => {
     for (const entity in this.defaultEntities) {
       const {id, mode} = this.defaultEntities[entity];
       const result = await this.coldChainInstance.addEntity(
@@ -68,7 +68,6 @@ contract("ColdChain", (accounts) => {
         { from: this.owner }
       );
 
-      console.log(result);
       expectEvent(result.receipt, "AddEntity", {
         entityId: id,
         entityMode: mode
@@ -81,4 +80,32 @@ contract("ColdChain", (accounts) => {
     }
 
   });
+
+
+  it("should add vaccine batches successfully", async () => {
+    for (let i = 0; i < Object.keys(this.defaultVaccineBatches).length; i++) {
+      const {brand, manufacturer} = this.defaultVaccineBatches[i];
+
+      const result = await this.coldChainInstance.addVaccineBatch(
+        brand,
+        manufacturer,
+        { from: this.owner }
+      );
+
+      expectEvent(result.receipt, "AddVaccineBatch", {
+        vaccineBatchId: String(i),
+        manufacturer: manufacturer
+      });
+
+      const retrievedVaccineBatch = await this.coldChainInstance.vaccinebatches.call(i);
+      assert.equal(i, retrievedVaccineBatch.id);
+      assert.equal(brand, retrievedVaccineBatch.brand);
+      assert.equal(manufacturer, retrievedVaccineBatch.manufacturer);
+      assert.equal(undefined, retrievedVaccineBatch.certificateIds);
+
+
+    }
+
+  });
+
 });
